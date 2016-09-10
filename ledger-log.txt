@@ -40,3 +40,19 @@ than its column, it too will be truncated with an ellipsis.
 The date formatting for the first column could also be pulled out into its own
 function. We can reuse our string lookup function from step 2 to look up the
 date-format string (e.g., "yyyy-MM-dd").
+
+## Step 6
+
+Currency formatting is tricky. The "standard" way to format numbers varies
+between locales, and the answer to "how do you format negative numbers?" can
+change when you're dealing with currency. (For example, in America, you drop the
+negative sign but wrap the value, currency symbol included, in parentheses.) We
+will use quite a number of small helper functions for this one, and it's best to
+group them into a module. In a real project these modules would be in separate
+files, but in Exercism you submit single files as solutions, so I'll leave the
+modules in the solution file.
+
+Now that currency formatting has been moved out into separate functions, the
+`formatLedger` function is starting to look quite a bit nicer. But we still need
+to deal with the ugliness of building up a result string by repeated mutation,
+and inefficient O(N^2) mutation (via string addition) at that. 
