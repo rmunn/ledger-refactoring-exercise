@@ -6,9 +6,16 @@ open System.Globalization
 type Entry = { dat: DateTime; des: string; chg: int }
 
 let mkEntry date description change = { dat = DateTime.Parse(date, CultureInfo.InvariantCulture); des = description; chg = change }
-        
+
+module Resource =
+    let isValidLocale = function
+        | "en-US"
+        | "nl-NL" -> true
+        | _ -> false
+
 let formatLedger currency locale entries =
-    
+
+    if not (Resource.isValidLocale locale) then failwith "Invalid locale" else
     let mutable res = ""
 
     if locale = "en-US" then res <- res + "Date       | Description               | Change       "

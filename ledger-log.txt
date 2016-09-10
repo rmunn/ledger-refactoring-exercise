@@ -1,0 +1,19 @@
+## First impressions
+
+Oh my, that's badly written. Duplicated code everywhere. Let's start by cleaning
+up all those "if locale = (hardcoded string)" statements and turning them into
+a function that looks up the appropriate text given a locale and a "key" string.
+In a larger project we could make that into a resource lookup.
+
+## Step 1
+
+Wrote a "Resource" module to keep everything in one place. It will **kind of**
+simulate accessing a .Net resource compiled into our DLL.
+
+Wrote a simple `isValidLocale` predicate. Since the other Resource module
+functions are going to be partial matches, this ensures that we'll get an error
+right away if an invalid locale is passed in. A compile-time error with a DU
+would be better, but that would require modifying the test code.
+
+Tests still pass.
+ 
