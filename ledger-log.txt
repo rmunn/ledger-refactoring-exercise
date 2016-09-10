@@ -16,4 +16,8 @@ right away if an invalid locale is passed in. A compile-time error with a DU
 would be better, but that would require modifying the test code.
 
 Tests still pass.
- 
+
+## Step 2
+
+Let's write a table of strings, and a lookup function to look them up by a key
+string. We'll test it by using it to build the header string. 

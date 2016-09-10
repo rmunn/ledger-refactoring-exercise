@@ -13,13 +13,46 @@ module Resource =
         | "nl-NL" -> true
         | _ -> false
 
+    let englishStrings =
+      [
+        "Date", "Date"
+        "Description", "Description"
+        "Change", "Change"
+        "*DateFormat*", "MM\/dd\/yyyy"  // TODO: Are these backslashes needed?
+        "*NumberFormat*", "#,#0.00"
+      ] |> Map.ofList
+
+    let dutchStrings =
+      [
+        "Date", "Datum"
+        "Description", "Omschrijving"
+        "Change", "Verandering"
+        "*DateFormat*", "dd-MM-yyyy"
+        "*NumberFormat*", "#,#0.00"
+      ] |> Map.ofList
+
+    let lookupTable = function
+        | "en-US" -> englishStrings
+        | "nl-NL" -> dutchStrings
+
+    let lookupStr key locale =
+        locale |> lookupTable |> Map.find key
+
+
 let formatLedger currency locale entries =
 
     if not (Resource.isValidLocale locale) then failwith "Invalid locale" else
     let mutable res = ""
 
-    if locale = "en-US" then res <- res + "Date       | Description               | Change       "
-    if locale = "nl-NL" then res <- res + "Datum      | Omschrijving              | Verandering  "
+    let header = (Resource.lookupStr "Date" locale).PadRight(10) +
+                 " | " +
+                 (Resource.lookupStr "Description" locale).PadRight(25) +
+                 " | " +
+                 (Resource.lookupStr "Change" locale).PadRight(13)
+    res <- res + header
+
+    // if locale = "en-US" then res <- res + "Date       | Description               | Change       "
+    // if locale = "nl-NL" then res <- res + "Datum      | Omschrijving              | Verandering  "
         
     for x in List.sortBy (fun x -> x.dat, x.des, x.chg) entries do
 
