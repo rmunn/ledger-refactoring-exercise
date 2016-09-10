@@ -5,15 +5,13 @@ open System.Globalization
 
 type Entry = { dat: DateTime; des: string; chg: int }
 
-let mkEntry date description change = { dat = DateTime.Parse(date, CultureInfo.InvariantCulture); des = description; chg = change }
+let mkEntry date description change =
+    { dat = DateTime.Parse(date, CultureInfo.InvariantCulture)
+      des = description
+      chg = change }
 
 [<AutoOpen>]
 module Resource =
-    let isValidLocale = function
-        | "en-US"
-        | "nl-NL" -> true
-        | _ -> false
-
     let englishStrings =
       [
         "Date", "Date"
@@ -86,12 +84,16 @@ let formatChangeW width currency locale amt =
 let formatDate (date:DateTime) locale =
     date.ToString(lookupStr "*DateFormat*" locale)
 
-let formatLedger currency locale entries =
+let formatDateW width date locale =
+    formatDate date locale |> padOrTrim width
 
-    if not (isValidLocale locale) then failwith "Invalid locale" else
+let formatLedger currency locale entries =
+    let dateWidth = 10
+    let descWidth = 25
+    let chngWidth = 13
 
     let header =
-        [ "Date", 10; "Description", 25; "Change", 13 ]
+        [ "Date", dateWidth; "Description", descWidth; "Change", chngWidth ]
         |> List.map (fun (key,width) -> lookupStr key locale |> padOrTrim width)
         |> String.concat " | "
 
@@ -99,9 +101,9 @@ let formatLedger currency locale entries =
         entries
         |> List.sortBy (fun x -> x.dat, x.des, x.chg)
         |> List.map (fun x ->
-            let date = formatDate x.dat locale
-            let desc = padOrTrim 25 x.des
-            let chng = formatChangeW 13 currency locale x.chg
+            let date = formatDateW dateWidth x.dat locale
+            let desc = padOrTrim descWidth x.des
+            let chng = formatChangeW chngWidth currency locale x.chg
             sprintf "%s | %s | %s" date desc chng)
 
     header :: body |> String.concat "\n"

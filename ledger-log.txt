@@ -62,3 +62,24 @@ and inefficient O(N^2) mutation (via string addition) at that.
 There. Much better. Instead of building up the result by inefficient repeated
 string concatenation, we now use an O(N) List.map and a single concatenation at
 the end.
+
+## Step 8
+
+A couple of final cleanups. First, since we've given all the locale-handling
+functions a sensible default, we no longer need to open with a runtime check for
+valid locales. Now instead of possibly throwing an exception, we'll just return
+sensible defaults (e.g., untranslated strings) for any unhandled locales. Output
+that's slightly ugly but valid is better than throwing an error.
+
+Also, there was a potential problem with column widths, since we were still
+defining them as hardcoded integers like the original code did. There were only
+two uses of those integers and they were close together, so anyone who changed
+one value (say, widening the number field from 13 to 20 spaces) would probably
+figure out they needed to change the other value as well. So it could be argued
+that that wasn't dangerous, and that the code that used hardcoded integers was
+easier to read than the code that I'm replacing it with. However, in a larger
+project there would likely be more uses than just these two, and "probably"
+isn't good enough when you're dealing with something where a mismatch would
+cause bugs. Granted, they'd "only" be output-formatting bugs, but bugs are bugs.
+
+With these two changes, the refactoring is complete and the code looks good now.
