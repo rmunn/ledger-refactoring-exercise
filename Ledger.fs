@@ -45,6 +45,9 @@ let padOrTrim width (str:string) =
     else
         str.Substring(0, width-3) + "..."
 
+let formatDate (date:DateTime) locale =
+    date.ToString(lookupStr "*DateFormat*" locale)
+
 let formatLedger currency locale entries =
 
     if not (isValidLocale locale) then failwith "Invalid locale" else
@@ -61,12 +64,8 @@ let formatLedger currency locale entries =
 
         res <- res + "\n"
 
-        if locale = "nl-NL" then 
-            res <- res + x.dat.ToString("dd-MM-yyyy")
+        res <- res + formatDate x.dat locale
 
-        if locale = "en-US" then 
-            res <- res + x.dat.ToString("MM\/dd\/yyyy")
-                
         res <- res + " | "
 
         res <- res + padOrTrim 25 x.des
