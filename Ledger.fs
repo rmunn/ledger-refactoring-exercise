@@ -89,27 +89,19 @@ let formatDate (date:DateTime) locale =
 let formatLedger currency locale entries =
 
     if not (isValidLocale locale) then failwith "Invalid locale" else
-    let mutable res = ""
 
-    let columns = [ "Date", 10; "Description", 25; "Change", 13 ]
     let header =
-        columns
+        [ "Date", 10; "Description", 25; "Change", 13 ]
         |> List.map (fun (key,width) -> lookupStr key locale |> padOrTrim width)
         |> String.concat " | "
-    res <- res + header
 
-    for x in List.sortBy (fun x -> x.dat, x.des, x.chg) entries do
+    let body =
+        entries
+        |> List.sortBy (fun x -> x.dat, x.des, x.chg)
+        |> List.map (fun x ->
+            let date = formatDate x.dat locale
+            let desc = padOrTrim 25 x.des
+            let chng = formatChangeW 13 currency locale x.chg
+            sprintf "%s | %s | %s" date desc chng)
 
-        res <- res + "\n"
-
-        res <- res + formatDate x.dat locale
-
-        res <- res + " | "
-
-        res <- res + padOrTrim 25 x.des
-
-        res <- res + " | "
-
-        res <- res + formatChangeW 13 currency locale x.chg
-
-    res
+    header :: body |> String.concat "\n"

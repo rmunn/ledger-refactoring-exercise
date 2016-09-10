@@ -55,4 +55,10 @@ modules in the solution file.
 Now that currency formatting has been moved out into separate functions, the
 `formatLedger` function is starting to look quite a bit nicer. But we still need
 to deal with the ugliness of building up a result string by repeated mutation,
-and inefficient O(N^2) mutation (via string addition) at that. 
+and inefficient O(N^2) mutation (via string addition) at that.
+
+## Step 7
+
+There. Much better. Instead of building up the result by inefficient repeated
+string concatenation, we now use an O(N) List.map and a single concatenation at
+the end.
