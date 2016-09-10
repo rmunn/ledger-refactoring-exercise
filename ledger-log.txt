@@ -20,4 +20,11 @@ Tests still pass.
 ## Step 2
 
 Let's write a table of strings, and a lookup function to look them up by a key
-string. We'll test it by using it to build the header string. 
+string. We'll test it by using it to build the header string.
+
+## Step 3
+
+That works, but the column widths are hardcoded in multiple places. Let's fix
+that with a list of column headings and widths. We've still only fixed the
+header so far, but it's starting to look better.
+ 

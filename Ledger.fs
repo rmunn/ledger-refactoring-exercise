@@ -7,6 +7,7 @@ type Entry = { dat: DateTime; des: string; chg: int }
 
 let mkEntry date description change = { dat = DateTime.Parse(date, CultureInfo.InvariantCulture); des = description; chg = change }
 
+[<AutoOpen>]
 module Resource =
     let isValidLocale = function
         | "en-US"
@@ -41,19 +42,16 @@ module Resource =
 
 let formatLedger currency locale entries =
 
-    if not (Resource.isValidLocale locale) then failwith "Invalid locale" else
+    if not (isValidLocale locale) then failwith "Invalid locale" else
     let mutable res = ""
 
-    let header = (Resource.lookupStr "Date" locale).PadRight(10) +
-                 " | " +
-                 (Resource.lookupStr "Description" locale).PadRight(25) +
-                 " | " +
-                 (Resource.lookupStr "Change" locale).PadRight(13)
+    let columns = [ "Date", 10; "Description", 25; "Change", 13 ]
+    let header =
+        columns
+        |> List.map (fun (key,width) -> (lookupStr key locale).PadRight(width))
+        |> String.concat " | "
     res <- res + header
 
-    // if locale = "en-US" then res <- res + "Date       | Description               | Change       "
-    // if locale = "nl-NL" then res <- res + "Datum      | Omschrijving              | Verandering  "
-        
     for x in List.sortBy (fun x -> x.dat, x.des, x.chg) entries do
 
         res <- res + "\n"
