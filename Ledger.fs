@@ -39,6 +39,11 @@ module Resource =
     let lookupStr key locale =
         locale |> lookupTable |> Map.find key
 
+let padOrTrim width (str:string) =
+    if str.Length <= width then
+        str.PadRight(width)
+    else
+        str.Substring(0, width-3) + "..."
 
 let formatLedger currency locale entries =
 
@@ -48,7 +53,7 @@ let formatLedger currency locale entries =
     let columns = [ "Date", 10; "Description", 25; "Change", 13 ]
     let header =
         columns
-        |> List.map (fun (key,width) -> (lookupStr key locale).PadRight(width))
+        |> List.map (fun (key,width) -> lookupStr key locale |> padOrTrim width)
         |> String.concat " | "
     res <- res + header
 
@@ -64,12 +69,7 @@ let formatLedger currency locale entries =
                 
         res <- res + " | "
 
-        if x.des.Length <= 25 then 
-            res <- res + x.des.PadRight(25)
-        elif x.des.Length = 25 then 
-            res <- res + x.des
-        else 
-            res <- res + x.des.[0..21] + "..."
+        res <- res + padOrTrim 25 x.des
 
         res <- res + " | "
         let c = float x.chg / 100.0

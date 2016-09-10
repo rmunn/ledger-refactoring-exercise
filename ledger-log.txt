@@ -27,4 +27,10 @@ string. We'll test it by using it to build the header string.
 That works, but the column widths are hardcoded in multiple places. Let's fix
 that with a list of column headings and widths. We've still only fixed the
 header so far, but it's starting to look better.
- 
+
+## Step 4
+
+The padding logic for the description column could be pulled out into its own
+function, and then that function could be reused in the header formatting as
+well. That way if we ever have a language where one of the headings is longer
+than its column, it too will be truncated with an ellipsis.
